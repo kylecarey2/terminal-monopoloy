@@ -20,10 +20,10 @@ Property::Property(string propertyData) {
     // id|name|price|color
     /// DOES NOT ERROR CHECK
     int startIndex = 0, endIndex = 0, separatorCount = 0;
+    bool alnumSeen = false;
     string temp;
     for (size_t i = 0; i < propertyData.length(); i++) {
         char c = propertyData.at(i);
-        bool alnumSeen = false;
         if (c == '|') {
             /// Assign temp to respective variable based on separatorCount
             if (separatorCount == 0) {
@@ -38,6 +38,7 @@ Property::Property(string propertyData) {
 
             /// increment separatorCount
             separatorCount++;
+            alnumSeen = false;
         }
         else if (isalnum(c) || c == '-') {
             /// Sets starting index of substring and ending index of substring
