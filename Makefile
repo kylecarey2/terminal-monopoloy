@@ -11,3 +11,6 @@ die.o: die.cc die.h
 
 monopoly.o: monopoly.cc die.h
 	$(CC) -c $(CFLAGS) monopoly.cc -o EXECS/monopoly.o
+
+clean:
+	rm EXECS/*.o 

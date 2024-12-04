@@ -15,7 +15,7 @@ using namespace std;
 
 int main(int argc, char const *argv[]) {
     Die d;
-    Die c(2);
+    Die c(-2);
     cout << d.getFace() << endl;
     cout << c.getFace() << endl;
     cout << d.roll() << endl;
