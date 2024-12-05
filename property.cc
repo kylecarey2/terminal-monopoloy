@@ -115,12 +115,4 @@ void Property::removeOwnerId() {
     ownerId = -1;
 }  /// removeOwnerId
 
-bool verifyUniqueId(const int &newId, const vector<Property> properties) {
-    for (size_t i = 0; i < properties.size(); i++) {
-        if (newId == properties[i].getId()) {
-            return false;
-        }
-    }
 
-    return true;
-}  /// verifyUniqueId

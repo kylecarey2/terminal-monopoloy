@@ -123,14 +123,7 @@ class Property {
      */
     void removeOwnerId();
 
-    /**
-     * Function:    verifyUniqueId
-     *              returns if the id has already been used in other properties
-     *
-     * @param newId - the id, as an int
-     * @return - bool, true if good to use, false if not
-     */
-    friend bool verifyUniqueId(const int &newId, const vector<Property> properties);
+
 
  private:
     int id;        /// id of property
