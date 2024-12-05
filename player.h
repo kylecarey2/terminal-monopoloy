@@ -12,6 +12,7 @@ public:
 
     int getId();
     int getBalance();
+    int getPosition();
     string getName();
     vector<Property> getPropertiesOwned();
     int getJailCards();
@@ -19,6 +20,7 @@ public:
 
     void setId(int newId);
     void setBalance(int newBalance);
+    void setPosition(int newPos);
     void setName(string newName);
     
     void addBalance(int amount);
@@ -30,6 +32,7 @@ public:
 private:
     int id;         /// number 0-whatever representing the player
     int balance;    /// player's balance
+    int pos;   /// player's position on the board
     string name;
     vector<Property> propertiesOwned;
 

@@ -7,6 +7,7 @@ using namespace std;
 Player::Player() {
     id = -1;
     balance = 1500;
+    pos = 0;
     name = "-";
     jailCards = 0;
     inJail = false;
@@ -16,6 +17,7 @@ Player::Player(int newId) {
     id = newId > -1 ? newId : -1;
 
     balance = 1500;
+    pos = 0;
     name = "-";
     jailCards = 0;
     inJail = false;
@@ -25,6 +27,7 @@ Player::Player(int newId, string newName) {
     id = newId > -1 ? newId : -1;
     name = !newName.empty() ? newName : "-";
 
+    pos = 0;
     balance = 1500;
     jailCards = 0;
     inJail = false;
@@ -38,6 +41,10 @@ int Player::getId() {
 
 int Player::getBalance() {
     return balance;
+}
+
+int Player::getPosition() {
+    return pos;
 }
 
 string Player::getName() {
@@ -65,6 +72,12 @@ void Player::setId(int newId) {
 
 void Player::setBalance(int newBalance) {
     balance = newBalance;
+}
+
+void Player::setPosition(int newPos) {
+    if (newPos > 0 && newPos < 39) {
+        pos = newPos;
+    }
 }
 
 void Player::setName(string newName) {
