@@ -35,31 +35,31 @@ Player::Player(int newId, string newName) {
 
 
 /// Getters
-int Player::getId() {
+int Player::getId() const {
     return id;
 }
 
-int Player::getBalance() {
+int Player::getBalance() const {
     return balance;
 }
 
-int Player::getPosition() {
+int Player::getPosition() const {
     return pos;
 }
 
-string Player::getName() {
+string Player::getName() const {
     return name;
 }
 
-vector<Property> Player::getPropertiesOwned() {
+vector<Property> Player::getPropertiesOwned() const {
     return propertiesOwned;
 }
 
-int Player::getJailCards() {
+int Player::getJailCards() const {
     return jailCards;
 }
 
-bool Player::isJailed() {
+bool Player::isJailed() const {
     return inJail;
 }
 

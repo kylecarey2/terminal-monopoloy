@@ -10,13 +10,13 @@ public:
     Player(int newId);
     Player(int newId, string newName);
 
-    int getId();
-    int getBalance();
-    int getPosition();
-    string getName();
-    vector<Property> getPropertiesOwned();
-    int getJailCards();
-    bool isJailed();
+    int getId() const;
+    int getBalance() const;
+    int getPosition() const;
+    string getName() const;
+    vector<Property> getPropertiesOwned() const;
+    int getJailCards() const;
+    bool isJailed() const;
 
     void setId(int newId);
     void setBalance(int newBalance);
