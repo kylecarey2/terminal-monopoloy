@@ -25,7 +25,7 @@ class Property {
      * Function:    Property
      *              sets all of the member data if Property data is read from a file
      *
-     * @param propertyData - string of property data in id|name|price|color format
+     * @param propertyData - string of property data in id|name|price|type format
      */
     Property(string propertyData);
 
@@ -55,12 +55,12 @@ class Property {
     string getName() const;
 
     /**
-     * Function:    getColor
-     *              returns the Property's color
+     * Function:    getType
+     *              returns the Property's type
      *
-     * @return - color, as a string
+     * @return - type, as a string
      */
-    string getColor() const;
+    string getType() const;
 
     /**
      * Function:    getOwnerId
@@ -98,13 +98,13 @@ class Property {
     void setName(string newName);
 
     /**
-     * Function:    setColor
-     *              sets the Property color to a value above that is not empty
+     * Function:    setType
+     *              sets the Property type to a value above that is not empty
      *
-     * @param newColor - the color to set to, as an string
+     * @param newType - the type to set to, as an string
      * @return - void
      */
-    void setColor(string newColor);
+    void setType(string newType);
 
     /**
      * Function:    setOwnerId
@@ -129,7 +129,7 @@ class Property {
     int id;        /// id of property
     int price;     /// price of property
     string name;   /// name of property
-    string color;  /// color of property
+    string type;  /// type of property
     int ownerId;   /// ownerId of property
 };
 #endif

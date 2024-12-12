@@ -6,7 +6,7 @@ Property::Property() {
     id = -1;
     price = -1;
     name = "-";
-    color = "-";
+    type = "-";
     ownerId = -1;
 }  /// Property
 
@@ -17,7 +17,7 @@ Property::Property(int newId) {
 }  /// Property
 
 Property::Property(string propertyData) {
-    // id|name|price|color
+    // id|name|price|type
     /// DOES NOT ERROR CHECK
     int startIndex = 0, endIndex = 0, separatorCount = 0;
     bool alnumSeen = false;
@@ -55,7 +55,7 @@ Property::Property(string propertyData) {
     }
 
     if (separatorCount == 3) {
-        color = temp;
+        type = temp;
     }
 
     ownerId = -1;
@@ -73,9 +73,9 @@ string Property::getName() const {
     return name;
 }  /// getName
 
-string Property::getColor() const {
-    return color;
-}  /// getColor
+string Property::getType() const {
+    return type;
+}  /// getType
 
 int Property::getOwnerId() const {
     return ownerId;
@@ -99,11 +99,11 @@ void Property::setName(string newName) {
     }
 }  /// setName
 
-void Property::setColor(string newColor) {
-    if (!newColor.empty()) {
-        color = newColor;
+void Property::setType(string newType) {
+    if (!newType.empty()) {
+        type = newType;
     }
-}  /// setColor
+}  /// setType
 
 void Property::setOwnerId(int newOwnerId) {
     if (newOwnerId > -1 && ownerId == -1) {
