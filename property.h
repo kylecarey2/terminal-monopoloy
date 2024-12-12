@@ -123,6 +123,8 @@ class Property {
      */
     void removeOwnerId();
 
+    friend Property findById(vector<Property> *props, int id);
+
 
 
  private:

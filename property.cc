@@ -116,3 +116,13 @@ void Property::removeOwnerId() {
 }  /// removeOwnerId
 
 
+Property findById(vector<Property> *props, int id) {
+    Property fake;
+    for (size_t i = 0; i < props->size(); i++) {
+        if (props->at(i).getId() == id) {
+            return props->at(i);
+        }
+    }
+
+    return fake;
+}

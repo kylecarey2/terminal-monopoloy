@@ -30,6 +30,8 @@ public:
     void decrementJailCards();
     void addProperty(Property p);
     void move(int num);
+    friend Player findById(vector<Player> *players, int id);
+
 
 private:
     int id;         /// number 0-whatever representing the player

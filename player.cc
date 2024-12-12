@@ -124,3 +124,14 @@ void Player::move(int num) {
         pos = pos + num;
     }
 }
+
+Player findById(vector<Player> *players, int id) {
+    Player fake;
+    for (size_t i = 0; i < players->size(); i++) {
+        if (players->at(i).getId() == id) {
+            return players->at(i);
+        }
+    }
+
+    return fake;
+}
