@@ -28,6 +28,7 @@ public:
     void incrementJailCards();
     void decrementJailCards();
     void addProperty(Property p);
+    void move(int num);
 
 private:
     int id;         /// number 0-whatever representing the player

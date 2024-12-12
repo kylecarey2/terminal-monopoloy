@@ -75,7 +75,7 @@ void Player::setBalance(int newBalance) {
 }
 
 void Player::setPosition(int newPos) {
-    if (newPos > 0 && newPos < 39) {
+    if (newPos > 0 && newPos < 40) {
         pos = newPos;
     }
 }
@@ -110,4 +110,13 @@ void Player::decrementJailCards() {
 
 void Player::addProperty(Property p) {
     propertiesOwned.push_back(p);
+}
+
+void Player::move(int num) {
+    if (pos + num > 39) {
+        pos = (pos + num) % 39;
+    }
+    else {
+        pos = pos + num;
+    }
 }
