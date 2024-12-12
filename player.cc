@@ -86,6 +86,10 @@ void Player::setName(string newName) {
     }
 }
 
+void Player::setJail(bool j) {
+    inJail = j;
+}
+
 void Player::addBalance(int amount) {
     if (amount >= 0) {
         balance += amount;

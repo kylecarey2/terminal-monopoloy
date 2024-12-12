@@ -22,6 +22,7 @@ public:
     void setBalance(int newBalance);
     void setPosition(int newPos);
     void setName(string newName);
+    void setJail(bool j);
     
     void addBalance(int amount);
     void removeBalance(int amount);
