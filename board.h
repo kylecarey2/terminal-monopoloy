@@ -9,12 +9,14 @@ class Board {
 public:
     Board(vector<Property> *pps, vector<Player> *pls);
     void outputTest();
-    void outputBoard();
+    void displayOverview();
 private:
+    // void displayBoard(const int &i);
+    // void displayDashboard(const int &i);
     void outputPPos(int boardPos);
     void setPropSubNames();
     int convertToBoardPos(int playerPos);
-    const vector<Property> *properties;
-    const vector<Player> *players;
+    vector<Property> *properties;
+    vector<Player> *players;
     vector<string> propSubNames;
 };
