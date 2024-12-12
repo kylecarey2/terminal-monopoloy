@@ -11,11 +11,10 @@ public:
     void outputTest();
     void outputBoard();
 private:
-    void updatePositions();
+    void outputPPos(int boardPos);
     void setPropSubNames();
     int convertToBoardPos(int playerPos);
     const vector<Property> *properties;
     const vector<Player> *players;
     vector<string> propSubNames;
-    map<int, int> ppos;
 };

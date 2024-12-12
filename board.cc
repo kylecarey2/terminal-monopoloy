@@ -9,13 +9,11 @@ using namespace std;
 Board::Board(vector<Property> *pps, vector<Player> *pls) {
     properties = pps;
     players = pls;
-    updatePositions();
     setPropSubNames();
 
 }
 
 void Board::outputTest() {
-    updatePositions();
     cout << "Properties:" << endl;
     for (size_t i = 0; i < properties->size(); i++) {
         cout << properties->at(i).getName() << endl;
@@ -26,23 +24,11 @@ void Board::outputTest() {
         cout << players->at(i).getName() << endl;
     }
 
-    cout << "Map" << endl;
-    for (auto itr = ppos.begin(); itr != ppos.end(); ++itr) {
-        cout << '\t' << itr->first << '\t' << itr->second
-             << '\n';
-    }
-
     cout << "Subnames" << endl;
     for (size_t i = 0; i < propSubNames.size(); i++) {
         cout << propSubNames.at(i) << endl;
     }
     cout << endl;
-}
-
-void Board::updatePositions() {
-    for (size_t i = 0; i < players->size(); i++) {
-        ppos[players->at(i).getId()] = convertToBoardPos(players->at(i).getPosition());
-    }
 }
 
 void Board::setPropSubNames() {
@@ -160,6 +146,7 @@ int Board::convertToBoardPos(int playerPos) {
 
 void Board::outputBoard() {
     int propNum = 0;
+    int spotsCount = 0;
     for (int i = 0; i < 34; i++) {
         // if (propNum > 10) { propNum = 10; }
         for (int j = 0; j < 56; j++) {
@@ -194,8 +181,9 @@ void Board::outputBoard() {
                 if (j % 5 == 0) {
                     cout << "|";
                 }
-                else if (i != 1 && i != 31) {
-                    cout << " ";
+                else if ((i != 1 && i != 31) && j % 5 == 1) {
+                    outputPPos(spotsCount);
+                    spotsCount++;
                 }
             }
             /// Down the sides
@@ -207,12 +195,38 @@ void Board::outputBoard() {
                     cout << propSubNames.at(propNum);
                     propNum++;
                 }
-                else if (i % 3 == 2 || (j > 5 && j < 51)) {
+                else if (j > 5 && j < 51) {
                     cout << " ";
+                }
+                else if (j % 5 == 1) {
+                    outputPPos(spotsCount);
+                    spotsCount++;
                 }
             }
         }
         cout << endl;
     }
-    cout << "\033[34A"; // number before A indicates how many lines
+    // cout << endl;
+}
+
+void Board::outputPPos(int boardPos) {
+    int spotsTaken = 0;
+    string output = "";
+    for (size_t i = 0; i < players->size(); i++) {
+        if (spotsTaken == 4) {
+            break;
+        }
+
+        int ppos = convertToBoardPos(players->at(i).getPosition());
+        if (ppos == boardPos) {
+            output += toupper(players->at(i).getName().at(0));
+            spotsTaken++;
+        }
+    }
+
+    for (int i = 4; i > spotsTaken; i--) {
+        output.insert(output.end(), ' ');
+    }
+
+    cout << output;
 }
