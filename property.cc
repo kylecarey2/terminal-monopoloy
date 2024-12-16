@@ -8,17 +8,28 @@ Property::Property() {
     name = "-";
     type = "-";
     ownerId = -1;
+    buyable = false;
 }  /// Property
 
 Property::Property(int newId) {
     if (newId > -1) {
         id = newId;
     }
+    else {
+        id = -1;
+    }
+
+    price = -1;
+    name = "-";
+    type = "-";
+    ownerId = -1;
+    buyable = false;
 }  /// Property
 
 Property::Property(string propertyData) {
     // id|name|price|type
     /// DOES NOT ERROR CHECK
+    string notBuyableTypes[] = {"Free", "Chance", "GoTo", "Chest", "Tax", "Go"};
     int startIndex = 0, endIndex = 0, separatorCount = 0;
     bool alnumSeen = false;
     string temp;
@@ -56,6 +67,14 @@ Property::Property(string propertyData) {
 
     if (separatorCount == 3) {
         type = temp;
+    }
+
+    buyable = true;
+    for (int i = 0; i < 6; i++) {
+        if (temp == notBuyableTypes[i]) {
+            buyable = false;
+            break;
+        }
     }
 
     ownerId = -1;
@@ -114,6 +133,15 @@ void Property::setOwnerId(int newOwnerId) {
 void Property::removeOwnerId() {
     ownerId = -1;
 }  /// removeOwnerId
+
+
+void Property::setBuyable(bool b) {
+        buyable = b;
+}
+
+bool Property::isBuyable() {
+    return buyable;
+}
 
 
 Property findById(vector<Property> *props, int id) {

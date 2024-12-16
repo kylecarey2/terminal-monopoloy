@@ -122,6 +122,9 @@ class Property {
      * @return - void
      */
     void removeOwnerId();
+    
+    bool isBuyable();
+    void setBuyable(bool b);
 
     friend Property findById(vector<Property> *props, int id);
 
@@ -133,5 +136,6 @@ class Property {
     string name;   /// name of property
     string type;  /// type of property
     int ownerId;   /// ownerId of property
+    bool buyable;
 };
 #endif
