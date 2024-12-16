@@ -10,6 +10,9 @@
 #include <cstdlib>
 #include <fstream>
 #include <cctype>
+// #include <unistd.h>
+#include <chrono>
+#include <thread>
 #include "die.h"
 #include "property.h"
 #include "player.h"
@@ -30,8 +33,10 @@ void createPlayers(vector<Player> &players); // prompts user for player number t
 void confirmPlayers(const vector<Player> &players); // prompts user to confirm players playing the game
 void cyclePlayers(vector<Player> &players); // cycles the players
 void cyclePlayers(vector<Player> &players, const int &randNum); // cycles the players a specified amount of times
-void quitGame(); // quits the game
+bool verifyQuit(); // quits the game
 void showActions(); // shows the actions
+char getAction(); // prompts and gets actions
+/// need a sort by id function for properties
 
 
 
@@ -45,17 +50,70 @@ int main(int argc, char const *argv[]) {
     vector<Player> players;
     Die D1, D2;
 
+    string s;
     /// Show welcome message with instructions
 
     /// Load properties and players into vectors and create board
     loadProperties(properties);
     createPlayers(players);
-    confirmPlayers(players);
+    // confirmPlayers(players);
     Board board(&properties, &players);
-    cout << "Starting game..." << endl;
+    sortById(properties);
+    cout << "\033[2J\033[H"; 
+    // players[0].setJail(false);
+    // players[1].addProperty(properties[3]);
+    // properties[3].setOwnerId(1);
+    // players[0].addProperty(properties[1]);
+    // properties[1].setOwnerId(0);
+    // players[0].addProperty(properties[5]);
+    // properties[5].setOwnerId(0);
+    // players[1].addProperty(properties[6]);
+    // properties[6].setOwnerId(1);
+
+    /// Game loop
+    bool play = true;
+    char action;
+    string prevMessage; // message saying what happened with the previous action / option
+    do {
+        prevMessage = "";
+        board.displayOverview();
+        action = getAction();
+        // cout << "-" << action << endl;
+        if (action == 'q') {
+            play = !verifyQuit();
+            if (!play) {
+                prevMessage = "Quit the game.";
+            }
+        }
+        else if (action == 'r') {
+            int spaces = roll(D1, D2);
+            /// Print board for each piece move
+            for (int i = 0; i < spaces; i++) {
+                cout << "\033[38A"; // number before A indicates how many lines cursor moves up
+                players.at(0).move(1);
+                cout << "Moving...                        " << '\n';
+                board.displayOverview();
+                this_thread::sleep_for(chrono::milliseconds(250));
+            }
+            prevMessage = players.at(0).getName() + " rolled and moved " + to_string(spaces) + " spaces";
+            cyclePlayers(players);
+        }
+        else if (action == 'h') {
+            showActions();
+        }
+
+    cout << "\033[2J\033[H"; // clears and resets the terminal 
 
 
-    cout << endl;
+    if (!prevMessage.empty()) {
+        cout << prevMessage << '\n';
+    }
+    } while(play);
+
+
+
+
+    // cout << "\033[2J\033[H"; // clears and resets the terminal (use once program ends)
     return 0;
 }/// main
 
@@ -151,7 +209,7 @@ void confirmPlayers(const vector<Player> &players) {
     }
 }
 
-void quitGame() {
+bool verifyQuit() {
     string response;
     do {
         cout << "All progress will be lost. Confirm you wish to quit the game. (y/n): ";
@@ -159,13 +217,15 @@ void quitGame() {
 
         if (tolower(response.at(0)) == 'y') {
             cout << "Quitting the game" << endl;
-            exit(0);
+            return true;
         }
         else if (tolower(response.at(0)) == 'n') {
             cout << "The game will continue" << endl;
-            break;
+            return false;
         }
     } while(response.at(0) != 'y' || response.at(0) != 'n');
+
+    return false;
 }
 
 void showActions() {
@@ -184,3 +244,20 @@ void cyclePlayers(vector<Player> &players, const int &randNum) {
     }
 }
 
+char getAction() {
+    string action;
+    bool validChoice = false;
+    do {
+        cout << "Action: ";
+        cin >> action;
+        char c = tolower(action.at(0));
+        if (c == 'q' || c == 'r' || c == 'u' || c == 'p' || c == 'h') {
+            return c;
+        }
+        else {
+            cout << "Invalid action. Input 'h' for help" << endl;
+        }
+    } while (!validChoice);
+
+    return 'q';
+}

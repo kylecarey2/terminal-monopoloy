@@ -154,3 +154,16 @@ Property findById(vector<Property> *props, int id) {
 
     return fake;
 }
+
+void sortById(vector<Property> &props) {
+    for (size_t i = 0; i < props.size() - 1; i++) {
+        int minIndex = i;
+        for (size_t j = i + 1; j < props.size(); j++) {
+            if (props.at(j).getId() < props.at(minIndex).getId()) {
+                minIndex = j;
+            }
+        }
+
+        swap(props.at(minIndex), props.at(i));
+    }
+}

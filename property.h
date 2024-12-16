@@ -127,6 +127,7 @@ class Property {
     void setBuyable(bool b);
 
     friend Property findById(vector<Property> *props, int id);
+    friend void sortById(vector<Property> &props); // helper function for manually assigning properties for testing
 
 
 

@@ -49,6 +49,8 @@ class Die {
      */
     int roll();
 
+    friend int roll(Die &d1, Die &d2);
+
  private:
     int sides;  /// sides of the die
     int face;   /// the current face of the die

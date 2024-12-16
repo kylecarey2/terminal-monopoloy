@@ -40,3 +40,7 @@ int Die::roll() {
     face = rand() % sides + 1;
     return face;
 }  /// roll
+
+int roll(Die &d1, Die &d2) {
+    return d1.roll() + d2.roll();
+}

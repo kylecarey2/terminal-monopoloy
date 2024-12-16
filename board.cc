@@ -165,6 +165,8 @@ void Board::displayOverview() {
     /// PROPERTY AND PLAYER ITERATORS
     int propNumIter = 0;
     int spotsCountIter = 0;
+
+    cout << "\033[?25l"; // removes cursor so output does not "glitch"
     for (int i = 0; i < 35; i++) {
         /// Board horizontal lines
         for (int j = 0; j < 56; j++) {
@@ -290,7 +292,10 @@ void Board::displayOverview() {
                 }
                 else if (i == 9 + currentPropOwned) {
                     cout << "Owned By: "; 
-                    if (currentPropOn.getOwnerId() == -1) {
+                    if (!currentPropOn.isBuyable()) {
+                        cout << "Not Ownable" << setw(9);
+                    }
+                    else if (currentPropOn.getOwnerId() == -1) {
                         cout << "Nobody" << setw(14);
                     }
                     else {
@@ -346,7 +351,10 @@ void Board::displayOverview() {
                 }
                 else if (i == 9 + nextPropOwned) {
                     cout << "Owned By: "; 
-                    if (nextPropOn.getOwnerId() == -1) {
+                    if (!nextPropOn.isBuyable()) {
+                        cout << "Not Ownable" << setw(9);
+                    }
+                    else if (nextPropOn.getOwnerId() == -1) {
                         cout << "Nobody" << setw(14);
                     }
                     else {
@@ -378,8 +386,10 @@ void Board::displayOverview() {
                 }
             }
         }      
-        cout << endl;
+        cout << "\r\n";
     }
+    
+    cout << "\033[?25h"; // puts cursor back
 }
 
 void Board::outputPPos(int boardPos) {
@@ -392,7 +402,13 @@ void Board::outputPPos(int boardPos) {
 
         int ppos = convertToBoardPos(players->at(i).getPosition());
         if (ppos == boardPos) {
-            output += toupper(players->at(i).getName().at(0));
+            if (i == 0) {
+                output = output + "\e[32m" + static_cast<char>(toupper(players->at(i).getName().at(0))) + "\e[0m";
+            }
+            else {
+                output += toupper(players->at(i).getName().at(0));
+            }
+
             spotsTaken++;
         }
     }
