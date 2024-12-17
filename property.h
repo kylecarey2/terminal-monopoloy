@@ -126,6 +126,9 @@ class Property {
     bool isBuyable();
     void setBuyable(bool b);
 
+    void setRent(int newRent);
+    int getRent() const;
+
     friend Property findById(vector<Property> *props, int id);
     friend void sortById(vector<Property> &props); // helper function for manually assigning properties for testing
 
@@ -138,5 +141,6 @@ class Property {
     string type;  /// type of property
     int ownerId;   /// ownerId of property
     bool buyable;
+    int rent;
 };
 #endif

@@ -9,6 +9,7 @@ Property::Property() {
     type = "-";
     ownerId = -1;
     buyable = false;
+    rent = -1;
 }  /// Property
 
 Property::Property(int newId) {
@@ -24,10 +25,11 @@ Property::Property(int newId) {
     type = "-";
     ownerId = -1;
     buyable = false;
+    rent = -1;
 }  /// Property
 
 Property::Property(string propertyData) {
-    // id|name|price|type
+    // id|name|price|rent|type
     /// DOES NOT ERROR CHECK
     string notBuyableTypes[] = {"Free", "Chance", "GoTo", "Chest", "Tax", "Go"};
     int startIndex = 0, endIndex = 0, separatorCount = 0;
@@ -45,6 +47,9 @@ Property::Property(string propertyData) {
             }
             else if (separatorCount == 2) {
                 price = stoi(temp);
+            }
+            else if (separatorCount == 3) {
+                rent = stoi(temp);
             }
 
             /// increment separatorCount
@@ -65,7 +70,7 @@ Property::Property(string propertyData) {
         temp = propertyData.substr(startIndex, endIndex - startIndex + 1);
     }
 
-    if (separatorCount == 3) {
+    if (separatorCount == 4) {
         type = temp;
     }
 
@@ -166,4 +171,14 @@ void sortById(vector<Property> &props) {
 
         swap(props.at(minIndex), props.at(i));
     }
+}
+
+void Property::setRent(int newRent) {
+    if (newRent > 0) {
+        rent = newRent;
+    }
+}
+
+int Property::getRent() const {
+    return rent;
 }
