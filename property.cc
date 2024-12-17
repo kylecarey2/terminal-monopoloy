@@ -9,7 +9,8 @@ Property::Property() {
     type = "-";
     ownerId = -1;
     buyable = false;
-    rent = -1;
+    // rent = -1;
+    upgradeCount = 0;
 }  /// Property
 
 Property::Property(int newId) {
@@ -25,7 +26,8 @@ Property::Property(int newId) {
     type = "-";
     ownerId = -1;
     buyable = false;
-    rent = -1;
+    // rent = -1;
+    upgradeCount = 0;
 }  /// Property
 
 Property::Property(string propertyData) {
@@ -48,9 +50,6 @@ Property::Property(string propertyData) {
             else if (separatorCount == 2) {
                 price = stoi(temp);
             }
-            else if (separatorCount == 3) {
-                rent = stoi(temp);
-            }
 
             /// increment separatorCount
             separatorCount++;
@@ -70,7 +69,7 @@ Property::Property(string propertyData) {
         temp = propertyData.substr(startIndex, endIndex - startIndex + 1);
     }
 
-    if (separatorCount == 4) {
+    if (separatorCount == 3) {
         type = temp;
     }
 
@@ -83,6 +82,9 @@ Property::Property(string propertyData) {
     }
 
     ownerId = -1;
+    upgradeCount = 0;
+    // rent = 0;
+    rentProgression = {};
 }  /// Property
 
 int Property::getId() const {
@@ -164,7 +166,7 @@ void sortById(vector<Property> &props) {
     for (size_t i = 0; i < props.size() - 1; i++) {
         int minIndex = i;
         for (size_t j = i + 1; j < props.size(); j++) {
-            if (props.at(j).getId() < props.at(minIndex).getId()) {
+            if (props.at(j).id < props.at(minIndex).id) {
                 minIndex = j;
             }
         }
@@ -173,12 +175,67 @@ void sortById(vector<Property> &props) {
     }
 }
 
-void Property::setRent(int newRent) {
-    if (newRent > 0) {
-        rent = newRent;
+// void Property::setRent(int newRent) {
+//     if (newRent > 0) {
+//         rent = newRent;
+//     }
+// }
+
+int Property::getRent() const {
+    if (upgradeCount >= rentProgression.size()) {
+        return rentProgression.at(rentProgression.size() - 1);
+    }
+    return rentProgression.at(upgradeCount);
+}
+
+bool isUpgradable(const Property &p, const vector<Property> &props) {
+    int propTypeOwned = 0;
+    for (size_t i = 0; i < props.size(); i++) {
+        if (p.type == props.at(i).type) {
+            propTypeOwned++;
+        }
+    }
+
+    // see if all property types are owned
+    if (propTypeOwned == 2 && (p.type == "Brown" || p.type == "Blue")) {
+        return true;
+    }
+    else if (propTypeOwned == 3 && (p.type != "Food" || p.type != "Green")) {
+        return true;
+    }
+    else {
+        return false;
+    }
+
+    // ensure it is not fully upgraded
+    if (p.upgradeCount < p.rentProgression.size() - 1) {
+        return true;
+    }
+    else {
+        return false;
     }
 }
 
-int Property::getRent() const {
-    return rent;
+void Property::upgrade() {
+    if (upgradeCount >= rentProgression.size() - 1) {
+        upgradeCount = rentProgression.size() - 1;
+    }
+    else {
+        upgradeCount++;
+    }
+}
+
+void setRentProgression(vector<Property> &properties, const vector<vector<int>> &progressions) {
+    int progressionCounter = 1;
+    for (size_t i = 0; i < properties.size(); i++) {
+        if (properties.at(i).buyable && properties.at(i).type != "Food" && properties.at(i).type != "Green") {
+            if (progressionCounter < progressions.size()) {
+                properties.at(i).rentProgression = progressions.at(progressionCounter);
+                progressionCounter++;
+            }
+        }
+        else if (properties.at(i).type == "Green") {
+            properties.at(i).rentProgression = progressions.at(0);
+        }
+    }
 }
