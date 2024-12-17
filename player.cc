@@ -118,7 +118,7 @@ void Player::addProperty(Property p) {
 
 void Player::move(int num) {
     if (pos + num > 39) {
-        pos = (pos + num) % 39;
+        pos = (pos + num) % 39 - 1;
     }
     else {
         pos = pos + num;
