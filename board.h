@@ -10,6 +10,7 @@ public:
     Board(vector<Property> *pps, vector<Player> *pls);
     void outputTest();
     void displayOverview();
+    void displayProperties();
 private:
     // void displayBoard(const int &i);
     // void displayDashboard(const int &i);

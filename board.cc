@@ -5,6 +5,7 @@
 #include "property.h"
 #include <vector>
 #include <cctype>
+// #include <string>
 using namespace std;
 
 Board::Board(vector<Property> *pps, vector<Player> *pls) {
@@ -150,13 +151,13 @@ void Board::displayOverview() {
     Player currentPlayer = players->at(0);
     int currentPropOwned = currentPlayer.getPropertiesOwned().size() < 16 ? currentPlayer.getPropertiesOwned().size() : 15;
     int currentPropOwnedIter = 0;
-    Property currentPropOn = findById(properties, currentPlayer.getPosition());
+    Property *currentPropOn = findById(properties, currentPlayer.getPosition());
 
     /// Next Player
     Player nextPlayer = players->at(1);
     int nextPropOwned = nextPlayer.getPropertiesOwned().size() < 16 ? nextPlayer.getPropertiesOwned().size() : 15;
     int nextPropOwnedIter = 0;
-    Property nextPropOn = findById(properties, nextPlayer.getPosition());
+    Property *nextPropOn = findById(properties, nextPlayer.getPosition());
 
     /// Due up players
     size_t playerNum = players->size() > 2 ? players->size() : 1;
@@ -284,33 +285,33 @@ void Board::displayOverview() {
                     cout << "Properties Owned: " << currentPlayer.getPropertiesOwned().size() << setw(30 - (18 + to_string(currentPlayer.getPropertiesOwned().size()).length()));
                 }
                 else if (currentPropOwnedIter < currentPropOwned) {
-                    cout << " -" << currentPlayer.getPropertiesOwned().at(currentPropOwnedIter).getName() << setw(30 - (2 + currentPlayer.getPropertiesOwned().at(currentPropOwnedIter).getName().length()));
+                    cout << " -" << currentPlayer.getPropertiesOwned().at(currentPropOwnedIter)->getName() << setw(30 - (2 + currentPlayer.getPropertiesOwned().at(currentPropOwnedIter)->getName().length()));
                     currentPropOwnedIter++;
                 }
                 else if (i == 8 + currentPropOwned) {
-                    cout << "Currently On: " << currentPropOn.getName() << setw(30 - (14 + currentPropOn.getName().length()));
+                    cout << "Currently On: " << currentPropOn->getName() << setw(30 - (14 + currentPropOn->getName().length()));
                 }
                 else if (i == 9 + currentPropOwned) {
                     cout << "Owned By: "; 
-                    if (!currentPropOn.isBuyable()) {
+                    if (!currentPropOn->isBuyable()) {
                         cout << "Not Ownable" << setw(9);
                     }
-                    else if (currentPropOn.getOwnerId() == -1) {
+                    else if (currentPropOn->getOwnerId() == -1) {
                         cout << "Nobody" << setw(14);
                     }
                     else {
-                        cout << findById(players, currentPropOn.getOwnerId()).getName() << setw(30 - (10 + findById(players, currentPropOn.getOwnerId()).getName().length()));
+                        cout << findById(players, currentPropOn->getOwnerId())->getName() << setw(30 - (10 + findById(players, currentPropOn->getOwnerId())->getName().length()));
                     }
                 }
                 else if (i == 10 + currentPropOwned) {
-                    if (currentPropOn.getOwnerId() == -1) {
-                        cout << "Cost: " << currentPropOn.getPrice() << setw(30 - (6 + to_string(currentPropOn.getPrice()).length()));
+                    if (currentPropOn->getOwnerId() == -1) {
+                        cout << "Cost: " << currentPropOn->getPrice() << setw(30 - (6 + to_string(currentPropOn->getPrice()).length()));
                     }
-                    else if (currentPropOn.getOwnerId() == currentPlayer.getId()) {
-                        cout << "Pays: " << currentPropOn.getPrice() << setw(30 - (6 + to_string(currentPropOn.getPrice()).length())); // change getPrice to the member data that shows how much a player pays if landed on
+                    else if (currentPropOn->getOwnerId() == currentPlayer.getId()) {
+                        cout << "Pays: " << currentPropOn->getRent() << setw(30 - (6 + to_string(currentPropOn->getRent()).length())); // change getPrice to the member data that shows how much a player pays if landed on
                     }
-                    else if (currentPropOn.getOwnerId() > -1) {
-                        cout << "You Owe(d): " << currentPropOn.getPrice() << setw(30 - (12 + to_string(currentPropOn.getPrice()).length())); // change getPrice to the member data that shows how much a player pays if landed on
+                    else if (currentPropOn->getOwnerId() > -1) {
+                        cout << "You Owe(d): " << currentPropOn->getRent() << setw(30 - (12 + to_string(currentPropOn->getRent()).length())); // change getPrice to the member data that shows how much a player pays if landed on
                     }
                     // also add another else if seeing if it is not ownable and then just setw(30);
                 }
@@ -343,33 +344,33 @@ void Board::displayOverview() {
                     cout << "Properties Owned: " << nextPlayer.getPropertiesOwned().size() << setw(30 - (18 + to_string(nextPlayer.getPropertiesOwned().size()).length()));
                 }
                 else if (nextPropOwnedIter < nextPropOwned) {
-                    cout << " -" << nextPlayer.getPropertiesOwned().at(nextPropOwnedIter).getName() << setw(30 - (2 + nextPlayer.getPropertiesOwned().at(nextPropOwnedIter).getName().length()));
+                    cout << " -" << nextPlayer.getPropertiesOwned().at(nextPropOwnedIter)->getName() << setw(30 - (2 + nextPlayer.getPropertiesOwned().at(nextPropOwnedIter)->getName().length()));
                     nextPropOwnedIter++;
                 }
                 else if (i == 8 + nextPropOwned) {
-                    cout << "Currently On: " << nextPropOn.getName() << setw(30 - (14 + nextPropOn.getName().length()));
+                    cout << "Currently On: " << nextPropOn->getName() << setw(30 - (14 + nextPropOn->getName().length()));
                 }
                 else if (i == 9 + nextPropOwned) {
                     cout << "Owned By: "; 
-                    if (!nextPropOn.isBuyable()) {
+                    if (!nextPropOn->isBuyable()) {
                         cout << "Not Ownable" << setw(9);
                     }
-                    else if (nextPropOn.getOwnerId() == -1) {
+                    else if (nextPropOn->getOwnerId() == -1) {
                         cout << "Nobody" << setw(14);
                     }
                     else {
-                        cout << findById(players, nextPropOn.getOwnerId()).getName() << setw(30 - (10 + findById(players, nextPropOn.getOwnerId()).getName().length()));
+                        cout << findById(players, nextPropOn->getOwnerId())->getName() << setw(30 - (10 + findById(players, nextPropOn->getOwnerId())->getName().length()));
                     }
                 }
                 else if (i == 10 + nextPropOwned) {
-                    if (nextPropOn.getOwnerId() == -1) {
-                        cout << "Cost: " << nextPropOn.getPrice() << setw(30 - (6 + to_string(nextPropOn.getPrice()).length()));
+                    if (nextPropOn->getOwnerId() == -1) {
+                        cout << "Cost: " << nextPropOn->getPrice() << setw(30 - (6 + to_string(nextPropOn->getPrice()).length()));
                     }
-                    else if (nextPropOn.getOwnerId() == nextPlayer.getId()) {
-                        cout << "Pays: " << nextPropOn.getPrice() << setw(30 - (6 + to_string(nextPropOn.getPrice()).length())); // change getPrice to the member data that shows how much a player pays if landed on
+                    else if (nextPropOn->getOwnerId() == nextPlayer.getId()) {
+                        cout << "Pays: " << nextPropOn->getRent() << setw(30 - (6 + to_string(nextPropOn->getRent()).length())); // change getPrice to the member data that shows how much a player pays if landed on
                     }
-                    else if (nextPropOn.getOwnerId() > -1) {
-                        cout << "You Owe(d): " << nextPropOn.getPrice() << setw(30 - (12 + to_string(nextPropOn.getPrice()).length())); // change getPrice to the member data that shows how much a player pays if landed on
+                    else if (nextPropOn->getOwnerId() > -1) {
+                        cout << "You Owe(d): " << nextPropOn->getRent() << setw(30 - (12 + to_string(nextPropOn->getRent()).length())); // change getPrice to the member data that shows how much a player pays if landed on
                     }
                     // also add another else if seeing if it is not ownable and then just setw(30);
                 }
@@ -418,4 +419,85 @@ void Board::outputPPos(int boardPos) {
     }
 
     cout << output;
+}
+
+void Board::displayProperties() {
+    /// variables
+    size_t playerCount = players->size(); 
+    int SPACE = 140 / playerCount;
+    size_t propCount = 0;
+
+    /// how to read
+    cout << "Property names are listed next to '-' with the property ID in () to the right of the name" << '\n';
+    cout << "Property types are listed next to '^' with the property upgrade count in () to the right of the type" << "\n\n";
+
+    for (int i = 0; i < 32; i++) {
+        size_t playerItr = 0; // reset every row
+        if (i == 0) {
+            cout << "Player Properties Owned:";
+        }
+        else if (i > 5 && i % 2 == 0) { // only increment on evens to keep same data for ^ section
+            propCount++;
+        }
+
+        cout << right;
+        for (int j = 0; j < 136; j++) {
+            if (i == 1) {
+                if (playerItr < playerCount) {
+                    cout << left << setw(SPACE) << players->at(playerItr).getName();
+                    playerItr++;
+                }
+            }
+            else if (i == 2) {
+                if (j % SPACE == SPACE - 1 && j != 135) {
+                    cout << "+";
+                } 
+                else {
+                    cout << "-";
+                }
+            }
+            else if (j % SPACE == 0) {
+                if (i == 3) {
+                    if (playerItr < playerCount) {
+                        cout << "Owned: " << players->at(playerItr).getPropertiesOwned().size() << setw(SPACE - (7 + (to_string(players->at(playerItr).getPropertiesOwned().size()).length())));
+                        playerItr++;
+                    }
+                }
+                else if (i == 4) {
+                    cout << setw(SPACE);
+                    playerItr++;
+                }
+                else if (i == 5) {
+                    cout << "Properties:" << setw(SPACE - 11);
+                    playerItr++;
+                }
+                else if (i > 5) {
+                    if (propCount - 1 < players->at(playerItr).getPropertiesOwned().size()) {
+                        string prop;
+                        if (i % 2 == 0) {
+                            prop = "-" + players->at(playerItr).getPropertiesOwned().at(propCount - 1)->getName() + " (" + to_string(players->at(playerItr).getPropertiesOwned().at(propCount - 1)->getId()) + ")";
+                        }
+                        else {
+                            prop = " ^" + players->at(playerItr).getPropertiesOwned().at(propCount - 1)->getType() + " (" + to_string(players->at(playerItr).getPropertiesOwned().at(propCount - 1)->getUpgradeCount()) + ")";
+                        }
+                        if (prop.length() > SPACE) {
+                            prop = prop.substr(0, SPACE - 1);
+                        }
+
+                        cout << prop << setw(SPACE - prop.length());
+                    }
+                    else {
+                        cout << setw(SPACE);
+                    }
+                    
+                    playerItr++;  
+                }
+
+                if (i > 1 && playerItr < playerCount) {
+                    cout << "|";
+                }
+            }
+        }
+        cout << "\r\n";
+    }
 }
