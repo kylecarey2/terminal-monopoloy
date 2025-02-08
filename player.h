@@ -14,7 +14,7 @@ public:
     int getBalance() const;
     int getPosition() const;
     string getName() const;
-    vector<Property> getPropertiesOwned() const;
+    vector<Property*> getPropertiesOwned() const;
     int getJailCards() const;
     bool isJailed() const;
 
@@ -28,9 +28,12 @@ public:
     void removeBalance(int amount);
     void incrementJailCards();
     void decrementJailCards();
-    void addProperty(Property p);
+    void addProperty(Property *p);
+    void removeProperty(size_t index);
     void move(int num);
-    friend Player findById(vector<Player> *players, int id);
+    friend Player* findById(vector<Player> *players, int id);
+    friend int findById(const vector<Player> &players, int id);
+
 
 
 private:
@@ -38,7 +41,7 @@ private:
     int balance;    /// player's balance
     int pos;   /// player's position on the board
     string name;
-    vector<Property> propertiesOwned;
+    vector<Property*> propertiesOwned;
 
     int jailCards;  /// number of get out of jail cards
     bool inJail;

@@ -431,7 +431,7 @@ void Board::displayProperties() {
     cout << "Property names are listed next to '-' with the property ID in () to the right of the name" << '\n';
     cout << "Property types are listed next to '^' with the property upgrade count in () to the right of the type" << "\n\n";
 
-    for (int i = 0; i < 32; i++) {
+    for (int i = 0; i < 33; i++) {
         size_t playerItr = 0; // reset every row
         if (i == 0) {
             cout << "Player Properties Owned:";
@@ -500,4 +500,42 @@ void Board::displayProperties() {
         }
         cout << "\r\n";
     }
+}
+
+void Board::displayPlayerProperties(Player &p, const string &msg) {
+    // Player p = players->at(0);
+    size_t propItr = 0;
+    size_t propSize = p.getPropertiesOwned().size();
+    int longestPropName = 0;
+    int longestTypeName = 0;
+    for (size_t i = 0; i < p.getPropertiesOwned().size(); i++) {
+        if (p.getPropertiesOwned().at(i)->getName().length() > longestPropName) { longestPropName = p.getPropertiesOwned().at(i)->getName().length(); }
+        if (p.getPropertiesOwned().at(i)->getType().length() > longestTypeName) { longestTypeName = p.getPropertiesOwned().at(i)->getType().length(); }
+    }
+
+
+    cout << "Reference the ID to " << msg << " a certain property" << "\n\n";
+    cout << left;
+    for (size_t i = 0; i < 33; i++) {
+        if (i == 0) {
+            cout << p.getName() << " properties owned:";
+        }
+        else if (i == 2) {
+            for (int j = 0; j < 13 + longestPropName + longestTypeName; j++) { cout << "-"; }
+        }
+        else if (i == 1) {
+            cout << setw(4) << "ID" << setw(2 + longestPropName) << "Name" << setw(2 + longestTypeName) << "Type" << "Level";
+        }
+        else if (propItr < propSize) {
+            cout << setw(2) << p.getPropertiesOwned().at(propItr)->getId() << "  "
+                << setw(longestPropName) << p.getPropertiesOwned().at(propItr)->getName() << "  "
+                << setw(longestTypeName) << p.getPropertiesOwned().at(propItr)->getType() << "  "
+                << p.getPropertiesOwned().at(propItr)->getUpgradeCount();
+
+            propItr++;
+        }
+
+        cout << "\n";
+    }
+    cout << right;
 }

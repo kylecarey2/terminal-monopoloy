@@ -51,7 +51,7 @@ string Player::getName() const {
     return name;
 }
 
-vector<Property> Player::getPropertiesOwned() const {
+vector<Property*> Player::getPropertiesOwned() const {
     return propertiesOwned;
 }
 
@@ -112,9 +112,14 @@ void Player::decrementJailCards() {
     }
 }
 
-void Player::addProperty(Property p) {
+void Player::addProperty(Property *p) {
     propertiesOwned.push_back(p);
 }
+
+void Player::removeProperty(size_t index) {
+    propertiesOwned.erase(propertiesOwned.begin() + index);
+}
+
 
 void Player::move(int num) {
     if (pos + num > 39) {
@@ -125,13 +130,22 @@ void Player::move(int num) {
     }
 }
 
-Player findById(vector<Player> *players, int id) {
-    Player fake;
+Player* findById(vector<Player> *players, int id) {
     for (size_t i = 0; i < players->size(); i++) {
-        if (players->at(i).getId() == id) {
-            return players->at(i);
+        if (players->at(i).id == id) {
+            return &players->at(i);
         }
     }
 
-    return fake;
+    return nullptr;
+}
+
+int findById(const vector<Player> &players, int id) {
+    for (size_t i = 0; i < players.size(); i++) {
+        if (players.at(i).id == id) {
+            return i;
+        }
+    }
+
+    return -1;
 }

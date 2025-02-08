@@ -131,10 +131,13 @@ class Property {
    //  void setRentProgression(const vector<int> &prog);
 
     void upgrade();
+    int getUpgradeCount() const;
+    void setUpgradeCount(size_t newUC);
+    vector<int> getRP();
 
-    friend Property findById(vector<Property> *props, int id);
+    friend Property* findById(vector<Property> *props, int id);
     friend void sortById(vector<Property> &props); // helper function for manually assigning properties for testing
-    friend bool isUpgradable(const Property &p, const vector<Property> &props); //pass in the property and properties owned by the player
+    friend int isUpgradable(const Property &p, const vector<Property*> &props); //pass in the property and properties owned by the player
     friend void setRentProgression(vector<Property> &properties, const vector<vector<int>> &progressions);
 
 
@@ -146,8 +149,7 @@ class Property {
     string type;  /// type of property
     int ownerId;   /// ownerId of property
     bool buyable;
-   //  int rent;
-    int upgradeCount;
+    size_t upgradeCount;
     vector<int> rentProgression;
 };
 #endif

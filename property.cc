@@ -1,6 +1,7 @@
 #include "property.h"
 
 #include <cstdlib>
+#include <iostream>
 
 Property::Property() {
     id = -1;
@@ -84,7 +85,7 @@ Property::Property(string propertyData) {
     ownerId = -1;
     upgradeCount = 0;
     // rent = 0;
-    rentProgression = {};
+    // rentProgression = {};
 }  /// Property
 
 int Property::getId() const {
@@ -151,15 +152,14 @@ bool Property::isBuyable() {
 }
 
 
-Property findById(vector<Property> *props, int id) {
-    Property fake;
+Property* findById(vector<Property> *props, int id) {
     for (size_t i = 0; i < props->size(); i++) {
         if (props->at(i).getId() == id) {
-            return props->at(i);
+            return &props->at(i);
         }
     }
 
-    return fake;
+    return nullptr;
 }
 
 void sortById(vector<Property> &props) {
@@ -182,45 +182,46 @@ void sortById(vector<Property> &props) {
 // }
 
 int Property::getRent() const {
-    if (upgradeCount >= rentProgression.size()) {
-        return rentProgression.at(rentProgression.size() - 1);
-    }
+    // if (upgradeCount >= rentProgression.size()) {
+    //     return rentProgression.at(0);
+    // }
     return rentProgression.at(upgradeCount);
 }
 
-bool isUpgradable(const Property &p, const vector<Property> &props) {
+int Property::getUpgradeCount() const {
+    return upgradeCount;
+}
+
+// returns 0 if upgradeable, 1 if current property is upgraded too far, 2 if all types are not owned, 3 if it is already fully upgraded
+int isUpgradable(const Property &p, const vector<Property*> &playerProps) {
     int propTypeOwned = 0;
-    for (size_t i = 0; i < props.size(); i++) {
-        if (p.type == props.at(i).type) {
+    for (size_t i = 0; i < playerProps.size(); i++) {
+        if (p.type == playerProps.at(i)->type) {
             propTypeOwned++;
+            
+            std::cout << p.upgradeCount << " " << playerProps.at(i)->upgradeCount << endl;
+            // indicates if current property is upgraded above the other properties
+            if (p.upgradeCount > playerProps.at(i)->upgradeCount) {
+                return 1;
+            }
         }
     }
 
     // see if all property types are owned
-    if (propTypeOwned == 2 && (p.type == "Brown" || p.type == "Blue")) {
-        return true;
-    }
-    else if (propTypeOwned == 3 && (p.type != "Food" || p.type != "Green")) {
-        return true;
-    }
-    else {
-        return false;
+    if (!((propTypeOwned == 2 && (p.type == "Brown" || p.type == "Blue")) || (propTypeOwned == 3 && (p.type != "Utility" || p.type != "Railroad")))) {
+        return 2;
     }
 
     // ensure it is not fully upgraded
-    if (p.upgradeCount < p.rentProgression.size() - 1) {
-        return true;
+    if (p.upgradeCount >= p.rentProgression.size() - 1) {
+        return 3;
     }
-    else {
-        return false;
-    }
+
+    return 0;
 }
 
 void Property::upgrade() {
-    if (upgradeCount >= rentProgression.size() - 1) {
-        upgradeCount = rentProgression.size() - 1;
-    }
-    else {
+    if (upgradeCount < rentProgression.size() - 1) {
         upgradeCount++;
     }
 }
@@ -228,14 +229,25 @@ void Property::upgrade() {
 void setRentProgression(vector<Property> &properties, const vector<vector<int>> &progressions) {
     int progressionCounter = 1;
     for (size_t i = 0; i < properties.size(); i++) {
-        if (properties.at(i).buyable && properties.at(i).type != "Food" && properties.at(i).type != "Green") {
+        if (properties.at(i).buyable && properties.at(i).type != "Utility" && properties.at(i).type != "Railroad") {
             if (progressionCounter < progressions.size()) {
                 properties.at(i).rentProgression = progressions.at(progressionCounter);
                 progressionCounter++;
             }
         }
-        else if (properties.at(i).type == "Green") {
+        else if (properties.at(i).type == "Railroad") {
             properties.at(i).rentProgression = progressions.at(0);
         }
+        else {
+            properties.at(i).rentProgression = {0};
+        }
     }
+}
+
+vector<int> Property::getRP() {
+    return rentProgression;
+}
+
+void Property::setUpgradeCount(size_t newUC) {
+    upgradeCount = 0;
 }

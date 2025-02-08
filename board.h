@@ -11,6 +11,7 @@ public:
     void outputTest();
     void displayOverview();
     void displayProperties();
+    void displayPlayerProperties(Player &p, const string &msg = "act on");
 private:
     // void displayBoard(const int &i);
     // void displayDashboard(const int &i);
