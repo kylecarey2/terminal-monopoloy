@@ -113,8 +113,11 @@ int main(int argc, char const *argv[]) {
     players[1].addProperty(&properties[25]);
     properties[25].setOwnerId(1);
 
-    players[0].setPosition(6);
+    // players[0].setPosition(6);
     players[1].setPosition(3);
+
+    players[0].incrementJailCards();
+    players[0].setJail(true);
 
     /// Game loop
     bool play = true;
@@ -134,25 +137,124 @@ int main(int argc, char const *argv[]) {
             }
         }
         else if (action == 'r') {
-            int spaces = roll(D1, D2);
-            /// Print board for each piece move
-            for (int i = 0; i < spaces; i++) {
-                cout << "\033[38A"; // number before A indicates how many lines cursor moves up
-                players.at(0).move(1);
-                cout << "Moving (" << spaces << ")" << "..." << setw(100) << '\n';
-                board.displayOverview();
-                this_thread::sleep_for(chrono::milliseconds(250));
+            Player* p = &players.at(0);
+            int spaces = 0;
+            bool fromJail = false;
+            
+            if (p->isJailed()) {
+                string response;
+                if (p->getJailCards() > 0) {
+                    char responseChar;
+                    do {
+                        cout << "Would you like to use a get out of jail free card? (y/n): ";
+                        cin >> response;
+                        responseChar = tolower(response.at(0));
+                    } while (responseChar != 'y' && responseChar != 'n'); 
+
+                    if (responseChar == 'y') {
+                        cout << "Rolling...\n";
+                        p->decrementJailCards();
+                        p->setJail(false);
+                        cout << "\033[2J\033[H"; // clears and resets the terminal 
+                        board.displayOverview();
+                        cout << "Get out of Jail Card used. Enter a character to roll the die: ";
+                        cin >> response;
+                    }
+                }
+
+                if (p->isJailed() > 0) {
+                    char responseChar;
+                    do {
+                        cout << "Would you like to pay $50 to get out of jail? (y/n): ";
+                        cin >> response;
+                        responseChar = tolower(response.at(0));
+                    } while (responseChar != 'y' && responseChar != 'n'); 
+
+                    if (responseChar == 'y') {
+                        p->removeBalance(50);
+                        p->setJail(false);
+                        cout << "\033[2J\033[H"; // clears and resets the terminal 
+                        board.displayOverview();
+                        cout << "Paid. Enter a character to roll the die: ";
+                        cin >> response;
+                    }
+                }
+                
+                if (p->isJailed()) {
+                    cout << "Enter a character to roll the die: ";
+                    cin >> response;
+                    int rollOne = D1.roll();
+                    int rollTwo = D2.roll();
+                    cout << "You rolled " << rollOne << " and " << rollTwo;
+                    
+
+                    if (rollOne == rollTwo) {
+                        p->setJail(false);
+                        fromJail = true;
+                        spaces = rollOne + rollTwo;
+                        cout << ". Getting out of jail...\n";
+                        prevMessage = "Rolled doubles to get out of jail";
+                    }
+                    else {
+                        cout << ". You stay in jail\n"; 
+                        p->incrementTurnsInJail();
+                    }
+
+                    if (p->getTurnsInJail() >= 3) {
+                        cout << "You must pay $50 to leave jail. Enter a character to acknowledge: ";
+                        cin >> response;
+                        spaces = rollOne + rollTwo;
+                        p->removeBalance(50);
+                        p->setJail(false);
+                    }
+                    this_thread::sleep_for(chrono::milliseconds(1500));
+                }
             }
 
-            Property* newProp = findById(&properties, players.at(0).getPosition());
-            if (newProp->isBuyable() && newProp->getOwnerId() != players.at(0).getId() && newProp->getOwnerId() != -1) {
-                cout << "You owe " << newProp->getRent() << ". Pay by entering a character: ";
+            cout << "\033[2J\033[H"; // clears and resets the terminal 
+
+
+            if (!p->isJailed()) {
+                if (!fromJail) {
+                    spaces = roll(D1, D2);
+                }
+
+                /// Print board for each piece move
+                for (int i = 0; i < spaces; i++) {
+                    cout << "\033[38A"; // number before A indicates how many lines cursor moves up
+                    p->move(1);
+                    cout << "Moving (" << spaces << ")" << "..." << setw(100) << '\n';
+                    board.displayOverview();
+                    this_thread::sleep_for(chrono::milliseconds(250));
+                }
+
+                Property* newProp = findById(&properties, p->getPosition());
+                if (newProp->isBuyable() && newProp->getOwnerId() != p->getId() && newProp->getOwnerId() != -1) {
+                    cout << "You owe " << newProp->getRent() << ". Pay by entering a character: ";
+                    cin >> prevMessage;
+                    pay(*p, players.at(findById(players, newProp->getOwnerId())), newProp->getRent());
+                }
+
+                if (!fromJail) {
+                    prevMessage = p->getName() + " rolled and moved " + to_string(spaces) + " spaces";
+                }
+                else {
+                    prevMessage = p->getName() + " rolled doubles and moved " + to_string(spaces) + " spaces to get out of jail";
+                }
+                doOption = true;
+            }
+
+            if (p->getPosition() == 30) {
+                cout << "You landed on \"Go To Jail \". Enter a character to acknowledge: ";
                 cin >> prevMessage;
-                pay(players.at(0), players.at(findById(players, newProp->getOwnerId())), newProp->getRent());
+                p->setJail(true);
+                prevMessage = p->getName() + " went to jail";
+                doOption = false;
             }
-
-            prevMessage = players.at(0).getName() + " rolled and moved " + to_string(spaces) + " spaces";
-            doOption = true;
+            
+            if (!doOption) {
+                cyclePlayers(players);
+            }
         }
         else if (action == 'h') {
             prevMessage = showActions();
@@ -515,7 +617,7 @@ void pay(Player &p1, Player &p2, const int &amount) {
 string showOptions() {
     cout << "\033[30A"; // number before A indicates how many lines cursor moves up
     cout << "\033[8COPTIONS:" << "\r\n";
-    cout << "\033[8Co - onward" << "\r\n";
+    cout << "\033[8Co/r - onward" << "\r\n";
     cout << "\033[8Cb - buy property" << "\r\n";
     cout << "\033[8Cs - sell property" << "\r\n";
     cout << "\033[8Cu - upgrade property" << "\r\n";
@@ -533,6 +635,9 @@ char getOption() {
         char c = tolower(action.at(0));
         if (c == 'o' || c == 'b' || c == 's' || c == 'u' || c == 'h') {
             return c;
+        }
+        else if (c == 'r') {
+            return 'o';
         }
         else {
             cout << "Invalid action. Input 'h' for help" << endl;

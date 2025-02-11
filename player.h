@@ -23,6 +23,9 @@ public:
     void setPosition(int newPos);
     void setName(string newName);
     void setJail(bool j);
+    int getTurnsInJail();
+    void incrementTurnsInJail();
+    
     
     void addBalance(int amount);
     void removeBalance(int amount);
@@ -45,5 +48,6 @@ private:
 
     int jailCards;  /// number of get out of jail cards
     bool inJail;
+    int turnsInJail;
 };
 #endif

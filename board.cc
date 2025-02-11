@@ -401,15 +401,19 @@ void Board::outputPPos(int boardPos) {
             break;
         }
 
+
         int ppos = convertToBoardPos(players->at(i).getPosition());
         if (ppos == boardPos) {
-            if (i == 0) {
+            if (players->at(i).isJailed()) {
+                output = output + "\e[31m" + static_cast<char>(toupper(players->at(i).getName().at(0))) + "\e[0m";
+            }
+            else if (i == 0) {
                 output = output + "\e[32m" + static_cast<char>(toupper(players->at(i).getName().at(0))) + "\e[0m";
             }
             else {
                 output += toupper(players->at(i).getName().at(0));
             }
-
+            
             spotsTaken++;
         }
     }

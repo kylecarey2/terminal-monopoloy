@@ -11,6 +11,7 @@ Player::Player() {
     name = "-";
     jailCards = 0;
     inJail = false;
+    turnsInJail = 0;
 }
 
 Player::Player(int newId) {
@@ -21,6 +22,8 @@ Player::Player(int newId) {
     name = "-";
     jailCards = 0;
     inJail = false;
+    turnsInJail = 0;
+
 }
 
 Player::Player(int newId, string newName) {
@@ -31,6 +34,8 @@ Player::Player(int newId, string newName) {
     balance = 1500;
     jailCards = 0;
     inJail = false;
+    turnsInJail = 0;
+
 }
 
 
@@ -87,6 +92,9 @@ void Player::setName(string newName) {
 }
 
 void Player::setJail(bool j) {
+    if (j) {
+        setPosition(10);
+    }
     inJail = j;
 }
 
@@ -109,6 +117,19 @@ void Player::incrementJailCards() {
 void Player::decrementJailCards() {
     if (jailCards > 0) {
         jailCards--;
+    }
+}
+
+int Player::getTurnsInJail() {
+    return turnsInJail;
+}
+
+void Player::incrementTurnsInJail() {
+    if (turnsInJail < 3) {
+        turnsInJail++;
+    }
+    else {
+        turnsInJail = 0;
     }
 }
 
