@@ -79,6 +79,10 @@ int main(int argc, char const *argv[]) {
 
     string s;
     /// Show welcome message with instructions
+    cout << "Welcome to OU Monopoly! Please enter the number of players that will play and follow the instructions. \n";
+    cout << "ACTIONS: r - roll the dice, u - upgrade current property, h - show actions, s - show properties, q - quit the game\n";
+    cout << "OPTIONS: o - onward, b - buy property, s - sell property, u - upgrade property, h - show options\n";
+    cout << "\n\n";
 
     /// Load properties and players into vectors and create board
     loadProperties(properties);
@@ -113,11 +117,11 @@ int main(int argc, char const *argv[]) {
     players[1].addProperty(&properties[25]);
     properties[25].setOwnerId(1);
 
-    // players[0].setPosition(6);
-    players[1].setPosition(3);
+    players[0].setPosition(34);
+    players[1].setPosition(12);
 
-    players[0].incrementJailCards();
-    players[0].setJail(true);
+    // players[0].incrementJailCards();
+    // players[0].setJail(true);
 
     /// Game loop
     bool play = true;
@@ -138,6 +142,7 @@ int main(int argc, char const *argv[]) {
         }
         else if (action == 'r') {
             Player* p = &players.at(0);
+            int previousPos = p->getPosition();
             int spaces = 0;
             bool fromJail = false;
             
@@ -228,12 +233,8 @@ int main(int argc, char const *argv[]) {
                     this_thread::sleep_for(chrono::milliseconds(250));
                 }
 
-                Property* newProp = findById(&properties, p->getPosition());
-                if (newProp->isBuyable() && newProp->getOwnerId() != p->getId() && newProp->getOwnerId() != -1) {
-                    cout << "You owe " << newProp->getRent() << ". Pay by entering a character: ";
-                    cin >> prevMessage;
-                    pay(*p, players.at(findById(players, newProp->getOwnerId())), newProp->getRent());
-                }
+                // Property* newProp = findById(&properties, p->getPosition());
+                
 
                 if (!fromJail) {
                     prevMessage = p->getName() + " rolled and moved " + to_string(spaces) + " spaces";
@@ -243,14 +244,129 @@ int main(int argc, char const *argv[]) {
                 }
                 doOption = true;
             }
+            
+            if (previousPos > p->getPosition()) {
+                cout << "You passed \"Go\". Enter a character to receive $200: ";
+                cin >> prevMessage;
+                p->addBalance(200);
+                prevMessage = p->getName() + " received $200 for passing Go";
+            }
 
-            if (p->getPosition() == 30) {
-                cout << "You landed on \"Go To Jail \". Enter a character to acknowledge: ";
+            Property* currrentlyOn = findById(&properties, p->getPosition());
+            if (currrentlyOn->getType() == "GoTo") {
+                cout << "You landed on \"Go To Jail\". Enter a character to acknowledge: ";
                 cin >> prevMessage;
                 p->setJail(true);
                 prevMessage = p->getName() + " went to jail";
                 doOption = false;
             }
+
+            if (currrentlyOn->getType() == "Tax") {
+                cout << "You landed on \"Tax\". Enter a character to pay $" << currrentlyOn->getPrice() << ": ";
+                cin >> prevMessage;
+                p->removeBalance(currrentlyOn->getPrice());
+                prevMessage = p->getName() + " paid $" + to_string(currrentlyOn->getPrice());
+            }
+
+            else if (currrentlyOn->getType() == "Chest") {
+                int result = D1.roll();
+                if (result == 1) {
+                    cout << "You get to collect $50 from the bank. Enter a character to accept: ";
+                    cin >> prevMessage;
+                    p->addBalance(50);
+                    prevMessage = p->getName() + " got $50 from the bank";
+                }
+                else if (result == 2) {
+                    cout << "Congratulations! You get advance to go and receive $200. Enter a character to accept: ";
+                    cin >> prevMessage;
+                    p->addBalance(200);
+                    p->setPosition(0);
+                }
+                else if (result == 3) {
+                    cout << "You must go to jail, do not stop to collect Go money. Enter a character to go to jail: ";
+                    cin >> prevMessage;
+                    p->setJail(true);
+                }
+                else if (result == 4) {
+                    cout << "You must pay the school tax of $150. Enter a character to acknowledge: ";
+                    cin >> prevMessage;
+                    p->removeBalance(150);
+                    prevMessage = p->getName() + " had to pay $150 to the bank";
+                }
+                else if (result == 5) {
+                    int rpos = rand() % 40;
+                    if (rpos == 30 || rpos == 17 || rpos == 33 || rpos == 36 || rpos == 38 || rpos == 7 || rpos == 2 || rpos == 4) { rpos++; }
+                    cout << "You get to advance to " << findById(&properties, rpos)->getName() << ". If you pass go collect $200";
+                    cin >> prevMessage;
+                    
+                    if (p->getPosition() > rpos) {
+                        p->addBalance(200);
+                    }
+                    
+                    p->setPosition(rpos);
+                    prevMessage = p->getName() + " moved to " + findById(&properties, rpos)->getName();
+                }
+                else {
+                    cout << "You receive a Get out of Jail Free card. Enter a character to accept: ";
+                    cin >> prevMessage;
+                    p->incrementJailCards();
+                    prevMessage = "Received a get out of jail free card";
+                }
+            }
+            else if (currrentlyOn->getType() == "Chance") {
+                int result = D2.roll();
+                if (result == 1) {
+                    cout << "You get to collect $75 from the bank. Enter a character to accept: ";
+                    cin >> prevMessage;
+                    p->addBalance(75);
+                    prevMessage = p->getName() + " got $75 from the bank";
+                }
+                else if (result == 2) {
+                    cout << "Congratulations! You get advance to go and receive $200. Enter a character to accept: ";
+                    cin >> prevMessage;
+                    p->addBalance(200);
+                    p->setPosition(0);
+                }
+                else if (result == 3) {
+                    cout << "You must go to jail, do not stop to collect Go money. Enter a character to go to jail: ";
+                    cin >> prevMessage;
+                    p->setJail(true);
+                }
+                else if (result == 4) {
+                    cout << "You must pay the utility tax of $75. Enter a character to acknowledge: ";
+                    cin >> prevMessage;
+                    p->removeBalance(150);
+                    prevMessage = p->getName() + " had to pay $150 to the bank";
+                }
+                else if (result == 5) {
+                    int rpos = rand() % 40;
+                    if (rpos == 30 || rpos == 17 || rpos == 33 || rpos == 36 || rpos == 38 || rpos == 7 || rpos == 2 || rpos == 4) { rpos++; }
+                    cout << "You get to advance to " << findById(&properties, rpos)->getName() << ". If you pass go collect $200";
+                    cin >> prevMessage;
+                    
+                    if (p->getPosition() > rpos) {
+                        p->addBalance(200);
+                    }
+                    
+                    p->setPosition(rpos);
+                    prevMessage = p->getName() + " moved to " + findById(&properties, rpos)->getName();
+                }
+                else {
+                    cout << "You receive a Get out of Jail Free card. Enter a character to accept: ";
+                    cin >> prevMessage;
+                    p->incrementJailCards();
+                    prevMessage = "Received a get out of jail free card";
+
+                }
+            }
+
+            currrentlyOn = findById(&properties, p->getPosition());
+            if (currrentlyOn->isBuyable() && currrentlyOn->getOwnerId() != p->getId() && currrentlyOn->getOwnerId() != -1) {
+                cout << "You owe " << currrentlyOn->getRent() << ". Pay by entering a character: ";
+                cin >> prevMessage;
+                pay(*p, players.at(findById(players, currrentlyOn->getOwnerId())), currrentlyOn->getRent());
+            }
+            
             
             if (!doOption) {
                 cyclePlayers(players);
