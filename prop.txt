@@ -1,0 +1,41 @@
+id|name|price|type                  !MUST STAY IN THIS ORDER ONLY EDIT NAMES .. if type is updated, go to property.cc and update notBuyableTypes string in third constructor
+20|Free Parking|0|Free
+21|Ryors|220|Red
+22|Chance|0|Chance
+23|Treudly|220|Red
+24|Bromley|240|Red
+25|College Green|200|Railroad
+26|Wilson|260|Yellow
+27|Sargent|260|Yellow
+28|Boyd|150|Utility
+29|James|280|Yellow
+30|GoTo Jail|0|GoTo
+19|Copeland|200|Orange
+31|Alden|300|Green
+18|Scripps|180|Orange
+32|Cutler|300|Green
+17|Chest|0|Chest
+33|Chest|0|Chest
+16|Bentley|180|Orange
+34|Baker|320|Green
+15|West Green|200|Railroad
+35|East Green|200|Railroad
+14|Carr|160|Magenta
+36|Chance|0|Chance
+13|Sowle|140|Magenta
+37|ARC|350|Blue
+12|Nelson|150|Utility
+38|Tax|100|Tax
+11|Tanaka|140|Magenta
+39|Stocker|400|Blue
+10|Visiting|0|Free
+9|Jefferson|120|Light Blue
+8|Read|100|Light Blue
+7|Chance|0|Chance
+6|Shively|100|Light Blue
+5|South Green|200|Railroad
+4|Tax|200|Tax
+3|Bush|60|Brown
+2|Chest|0|Chest
+1|Biddle|60|Brown
+0|Go|0|Go

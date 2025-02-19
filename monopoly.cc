@@ -559,11 +559,6 @@ int main(int argc, char const *argv[]) {
 
     } while(play);
 
-
-    
-
-
-
     // cout << "\033[2J\033[H"; // clears and resets the terminal (use once program ends)
     return 0;
 }/// main
