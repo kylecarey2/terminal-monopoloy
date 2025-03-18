@@ -1,6 +1,6 @@
 # Terminal-Monopoly
 
-Terminal-Monopoly is a way to play monopoly in the terminal created in c++. This project was created over winter break of my freshman year and was presented for the ACM code showdown. This project is still a work in progress. 
+Terminal-Monopoly is a way to play monopoly in the terminal created in c++. This project was created over winter break of my freshman year and was presented for the ACM code showdown. This project is still a work in progress and lacks documentation throughout. I intend to document this project fully soon. 
 
 ## Usage
 
